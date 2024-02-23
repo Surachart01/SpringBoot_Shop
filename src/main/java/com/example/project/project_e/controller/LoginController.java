@@ -26,7 +26,6 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseEntity<?> getToken(@RequestBody AccountCredentials credentials) {
-        try {
             UsernamePasswordAuthenticationToken creds = new UsernamePasswordAuthenticationToken(credentials.email(),
             credentials.password());
     Authentication auth = authenticationManager.authenticate(creds);
@@ -36,10 +35,6 @@ public class LoginController {
     return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION,
             "Bearer" + jwts).header(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS,
                     "Authorization").build();
-        } catch (Exception e) {
-            System.err.println(e);
-            return ResponseEntity.ok(e);
-        }
        
     }
 }
