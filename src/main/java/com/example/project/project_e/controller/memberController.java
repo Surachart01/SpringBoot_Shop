@@ -93,11 +93,11 @@ public class memberController {
             oldMember.setAddress(member.getAddress());
 
             memberRepo.save(oldMember);
-            responseMap.put("message", "Edit car id " + id + " complate");
+            responseMap.put("message", "Edit member id " + id + " complate");
             responseMap.put("data", oldMember);
 
         } else {
-            responseMap.put("message", "Cannot find car id " + id);
+            responseMap.put("message", "Cannot find member id " + id);
         }
          ResponseEntity<Map<String, Object>> res = ResponseEntity.ok(responseMap);
          return res; 
