@@ -64,26 +64,30 @@ public class SecurityConfig {
     }
 
     // Add filterChain method
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf((csrf) -> csrf.disable())
-                .cors(withDefaults())
-                .sessionManagement(
-                        (sessionManagement) -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests.requestMatchers(HttpMethod.POST,
-                        "/login").permitAll().anyRequest().authenticated())
-                .addFilterBefore(authenticationFilter,
-                        UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling((exceptionHandling) -> exceptionHandling.authenticationEntryPoint(exceptionHandler));
-        return http.build();
-    }
+@Bean
+public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http.csrf((csrf) -> csrf.disable())
+        .cors(withDefaults())
+        .sessionManagement((sessionManagement) ->
+            sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .authorizeHttpRequests((authorizeHttpRequests) ->
+            authorizeHttpRequests
+                .requestMatchers("/swagger-ui.html", "/swagger-ui/**","/api-docs/swagger-config","/api-docs").permitAll() // อนุญาตให้ Swagger UI เข้าถึงได้
+                .requestMatchers(HttpMethod.POST, "/login").permitAll()
+                .anyRequest().authenticated())
+        .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
+        .exceptionHandling((exceptionHandling) ->
+            exceptionHandling.authenticationEntryPoint(exceptionHandler));
+    
+    return http.build();
+}
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(Arrays.asList("*"));
-        config.setAllowedMethods(Arrays.asList("*"));
+        config.setAllowedMethods(Arrays.asList("GET","POST","PUT","PATCH","DELETE"));
         config.setAllowedHeaders(Arrays.asList("*"));
         config.setAllowCredentials(true);
         config.applyPermitDefaultValues();
